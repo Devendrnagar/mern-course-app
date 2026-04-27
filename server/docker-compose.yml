@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  server:
+    build: .
+    container_name: mern-course-server
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - JWT_SECRET=${JWT_SECRET:-secret}
+      - MONGO_URI=mongodb://mongo:27017/mern-assignment
+      - REDIS_URL=redis://redis:6379
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: mern-course-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: mern-course-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
